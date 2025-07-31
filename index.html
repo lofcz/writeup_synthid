@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Steganography Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .dragover {
+            border-color: #3b82f6; /* blue-500 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 antialiased">
+    <div class="container mx-auto p-8 max-w-4xl">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold mb-2">Steganography Demo</h1>
+            <p class="text-lg text-gray-400">A Simple LSB Steganography Tool</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- Encoder Section -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">Encoder</h2>
+                <p class="text-gray-400 mb-4 text-sm">Embed a secret message into an image.</p>
+                
+                <textarea id="message-input" placeholder="Your secret message (max 128 chars)" maxlength="128"
+                          class="w-full bg-gray-700 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                
+                <div id="drop-zone-encode" class="border-2 border-dashed border-gray-600 rounded-md p-6 text-center cursor-pointer hover:border-blue-500 transition">
+                    <p>Drag & drop an image here, or click to select</p>
+                    <p class="text-xs text-gray-500 mt-1">(min 128x128px)</p>
+                    <input type="file" id="file-input-encode" class="hidden">
+                </div>
+                
+                <img id="preview-encode" src="#" alt="Preview" class="mt-4 rounded-md hidden max-w-full h-auto"/>
+                
+                                        <button id="encode-button" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition">
+                            Encode Message
+                        </button>
+
+                        <div id="example-images" class="mt-6">
+                            <h3 class="text-lg font-semibold text-gray-300 mb-3">Example Inputs</h3>
+                            <div class="flex justify-around items-center gap-2">
+                                <!-- Example images will be injected here by script.js -->
+                            </div>
+                        </div>
+
+                        <div id="result-encode" class="mt-4 text-center"></div>
+                    </div>
+
+            <!-- Decoder Section -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">Decoder</h2>
+                <p class="text-gray-400 mb-4 text-sm">Extract a secret message from an image.</p>
+
+                <div id="drop-zone-decode" class="border-2 border-dashed border-gray-600 rounded-md p-6 text-center cursor-pointer hover:border-blue-500 transition">
+                    <p>Drag & drop an encoded image here</p>
+                    <input type="file" id="file-input-decode" class="hidden">
+                </div>
+
+                <img id="preview-decode" src="#" alt="Preview" class="mt-4 rounded-md hidden max-w-full h-auto"/>
+
+                <div id="result-decode" class="mt-6 p-4 bg-gray-700 rounded-md text-center">
+                    <p>Decoded message will appear here.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <canvas id="canvas" class="hidden"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/pica/dist/pica.min.js"></script>
+    <script src="script.js" type="module"></script>
+</body>
+</html>
