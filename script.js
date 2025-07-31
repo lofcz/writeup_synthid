@@ -163,8 +163,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (denominator === 0) return 0;
         return sumDiffProd / denominator;
     }
+
+    function getAdaptiveGain(dctSquare) {
+        let energy = 0;
+        for (let i = 1; i < 16; i++) energy += Math.abs(dctSquare[i]);
+        return gain * (1 + Math.log1p(energy) * 0.25); // Refined logarithmic gain
+    }
     
-        function dctEmbed(dataArray, size, binaryString, isEncode) {
+    function dctEmbed(dataArray, size, binaryString, isEncode) {
         const prngs = [];
         for (let i = 0; i < CHANNELS; i++) {
             const channelSeed = seed + `_ch${i}`;
@@ -209,11 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const p1 = prngs[channelIndex].p1;
 
             if (isEncode) {
-                // --- Adaptive Gain ---
-                let energy = 0;
-                for (let i = 1; i < 16; i++) energy += Math.abs(dctSquare[i]);
-                const blockGain = gain * (1 + Math.log1p(energy) * 0.25); // Refined logarithmic gain
-                // ---
+                const blockGain = getAdaptiveGain(dctSquare);
 
                 const bitIndex = Math.floor(blockIndex / CHANNELS);
                 const bit = binaryString[bitIndex];
@@ -227,11 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let i = 2; i < N; i++) for (let j = 0; j < i + 1; j++) dctSquare[j*N+(i-j)] += noiseVector[k++];
                 for (let j = 0; j < N - 1; j++) dctSquare[(1+j)*N+(N-1-j)] += noiseVector[k++];
             } else {
-                // --- Adaptive Gain ---
-                let energy = 0;
-                for (let i = 1; i < 16; i++) energy += Math.abs(dctSquare[i]);
-                const blockGain = gain * (1 + Math.log1p(energy) * 0.25); // Refined logarithmic gain
-                // ---
+                const blockGain = getAdaptiveGain(dctSquare);
                 const noise0 = new Float32Array(10).map(() => (p0() * 2.0 - 1.0) * blockGain);
                 const noise1 = new Float32Array(10).map(() => (p1() * 2.0 - 1.0) * blockGain);
                 const c0 = pearsonCorrelation(dataVector, noise0);
